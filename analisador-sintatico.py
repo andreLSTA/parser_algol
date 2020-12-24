@@ -9,11 +9,11 @@ def lines(index, error_list, after_or_but_received, last_token, error_type):
 	lines = code.split('\n')
 	line = 0
 	size = 0
+
 	for line in range(len(lines)):
-		size += len(lines[line]) + 1
-		# print(lines[line], len(lines[line]), size, index)
-		
+		size += len(lines[line]) + 1		
 		line += 1
+
 		if(index < size):
 			line -= 1
 			size = size - len(lines[line]) - 1
@@ -220,9 +220,6 @@ def parser():
 			current_possible_tokens = current_grammar_data[1]
 			current_possible_grammars = current_grammar_data[2]
 
-			# print(current_token, current_grammar_name, current_state, current_entry_index)
-
-
 			empty_index = len(current_possible_tokens) + len(current_possible_grammars)
 			not_successful = False
 			if(current_entry_index < empty_index):
@@ -235,22 +232,15 @@ def parser():
 			else:
 				not_successful = True
 				
-			# print(current_token, current_grammar_name, current_state, current_entry_index)
-
-			# print(current_token, current_grammar_name, current_state, current_entry_index)
-
 			if(not not_successful):
 				
-				# print(current_token, current_grammar_name, current_state, current_entry_index)
-
 				if(current_entry_index < len(current_possible_tokens)):
 					if(current_token == current_possible_tokens[current_entry_index]):
 
 						result = current_grammar[current_state][current_entry_index]
 
 						if(type(result) == int):
-							# print(current_token, current_grammar_name, current_state, current_entry_index)
-							# print('salvei')
+							
 							grammar_stack.append(current_grammar_name)
 							state_stack.append(current_state)
 							entry_index_stack.append(current_entry_index)
@@ -274,11 +264,6 @@ def parser():
 								current_sequence = token[2]
 
 						else:
-
-							# print('SUCCESSO TOKEN')
-
-							# print(current_token, current_grammar_name, current_state, current_entry_index)
-							# print('salvei')
 
 							success = True
 							log_list.append([current_token, current_grammar_name, current_state, current_entry_index , 'success'])
@@ -363,17 +348,10 @@ def parser():
 
 				if(empty_result == "error"):
 					
-					# print('ERRO VAZIO')
-
 					for token_index in range(len(current_possible_tokens)):
 						if(current_grammar[current_state][token_index] != 'error'):
 							error_list.append([current_possible_tokens[token_index], current_state, current_token, current_sequence, index, current_grammar_name, current_grammar[current_state][token_index]])
 
-					# print("OLHA AQUI")
-					# print(using_token_stack)
-					# print(grammar_stack)
-					# print(came_from_empty_state)
-					# print(state_stack)
 					empty_state = came_from_empty_state.pop()
 					if(current_state != 0 and not empty_state):
 						not_using_token_stack.append(current_token)
@@ -385,14 +363,10 @@ def parser():
 						current_sequence = using_sequence_stack.pop()
 
 
-					# print('deu ruim', current_token, grammar_stack)
-					# print(current_state, current_grammar_name)
 					current_grammar_name = grammar_stack.pop()
 					current_state = state_stack.pop()
 					grammar_id = grammar_id_stack.pop()
 
-					# print('new_token', current_token)
-					# print(using_token_stack)
 					current_entry_index = entry_index_stack.pop()
 
 					current_entry_index += 1
@@ -400,7 +374,6 @@ def parser():
 
 				else:
 
-					# input()
 					success = True
 					grammar_stack.append(current_grammar_name)
 					state_stack.append(current_state)
@@ -410,35 +383,21 @@ def parser():
 					k = 1
 					while True:
 
-						
-						
-						
-						# k = 0
 						initial_k = k
-						# print('a')
-						# print(grammar_id_stack[-initial_k])
-						# print(grammar_id_stack)
-						# print(current_state, current_grammar_name, grammar_stack, grammar_id_stack)
 						while (grammar_id != grammar_id_stack[-initial_k] - 1):
-							# print(current_state, grammar_id)
 							k += 1
 							current_grammar_name = grammar_stack[-k]
 							current_state = state_stack[-k]
 							current_entry_index = entry_index_stack[-k]
 							grammar_id = grammar_id_stack[-k]
-							# print(k)
-
+							
 							
 
-						# print('SUCCESSO VAZIO')
-						# print(current_token, index, current_grammar_name, current_state, current_entry_index)
-						# print('vish')
 						current_grammar_data = grammarDecoder(current_grammar_name)
 						current_grammar = current_grammar_data[0]
 
 						result = current_grammar[current_state][current_entry_index]
 						
-						# print(result)
 						if(type(result) == int):
 
 							current_state = result
@@ -450,13 +409,9 @@ def parser():
 	except:
 
 
-		# traceback.print_exc()
 		print()
 
 	
-
-	# for item in log_list:
-	# 		print(item)
 
 	if(success):
 		token = getNextToken(index)
@@ -475,21 +430,10 @@ def parser():
 			log_list.append([current_token,  index, 'error'])
 		
 
-		# for item in log_list:
-		# 	print(item)
-
-		# print()
-		# for item in error_list:
-		# 	print(item)
-
-		# print()
 		if(len(not_using_token_stack) > 0):
 			error_list = filterErrorList(not_using_token_stack[0], not_using_token_index_stack[0] ,error_list)
 		else:
 			error_list = filterErrorList(log_list[-1][0], index, error_list)
-
-		# for item in error_list:
-		# 	print(item)
 
 		after_or_but_received = "but received"
 		last_token = log_list[-1][0]
@@ -509,19 +453,15 @@ def parser():
 			return None
 
 	
-
-
-
 def hasNextToken(stack):
 	return len(stack) > 0
+
 
 def findTerminalSymbol(current_token, possible_tokens):
 	if current_token in possible_tokens:
 		return possible_tokens.index(current_token)
 
 	return -1
-
-
 
 
 def grammarDecoder(grammar_name):
@@ -586,9 +526,6 @@ def grammarDecoder(grammar_name):
 	else:
 		return None
 
-
-# import tracemalloc
-# tracemalloc.start()
 
 testTokens = [
 	"program",
@@ -1127,108 +1064,10 @@ code = file1.read().rstrip()
 def changeCode(new_code):
 	code = new_code
 
-# code = removeComments()
-# print(code)
-
-# index_2 = 0
-# while(index_2 != len(code)):
-# 	token = getNextToken(index_2)
-# 	print(token)
-# 	index_2 = token[1]
-
-# parser()
-# print(grammarDecoder('Z'))
-# parserTest()
-
 if(len(code) > 0):
 	error_list = parser()
-	# print(error_list)
-	# codes = [code]
-	# initial_code = code
-	# old_code = code
-	# error_traceback = []
-
-	# if(error_list != None):
-	# 	for i, error in enumerate(error_list):
-	# 		error_list[i] = [error[0], error[1], error[2], error[3], error[4], error[5], error[6], i, 0, 0]
-
-	# 	winner = 0
-	# 	level = 0
-	# 	last_index = len(error_list) - 1
-	# 	for i, error in enumerate(error_list):
-	# 		last_one = False
-	# 		if(i == last_index):
-	# 			last_one = True
-
-	# 		code = codes[error[-1]]
-	# 		code = putBeforeToken(error[0], error[3], error[4])
-	# 		codes.append(code)
-	# 		code_id = len(codes) - 1
-	# 		new_error_list = parser()
-	# 		if(new_error_list != None):
-
-	# 			for k, new_error in enumerate(new_error_list):
-	# 				error_list.append([new_error[0], new_error[1], new_error[2], new_error[3], new_error[4], new_error[5], new_error[6], error[7], level, code_id])
-
-	# 			code = codes[error[-1]]
-	# 			code = replaceToken(error[0], error[3], error[4])
-	# 			codes.append(code)
-	# 			code_id = len(codes) - 1
-	# 			new_error_list = parser()
-	# 			if(new_error_list != None):
-	# 				for k, new_error in enumerate(new_error_list):
-	# 					error_list.append([new_error[0], new_error[1], new_error[2], new_error[3], new_error[4], new_error[5], new_error[6], error[7], level, code_id])
-
-	# 				if(last_one):
-
-	# 					level += 1
-	# 					last_one = False
-	# 					last_index = len(error_list) - 1
-
-	# 			else:
-
-	# 				winner = i
-	# 				del error_list[i+1:]
-
-	# 				error_winner = error_list[i]
-	# 				for error in error_list:
-	# 					if(error[-3] == error_winner[-3]):
-	# 						error_traceback.append(error)
-
-	# 				break
-				
-
-	# 		else:
-	# 			winner = i
-	# 			del error_list[i+1:]
-
-	# 			error_winner = error_list[i]
-	# 			for error in error_list:
-	# 				if(error[-3] == error_winner[-3]):
-	# 					error_traceback.append(error)
-
-	# 			break
-
-
-
-		
-
-
-	# print(error_traceback)
-
-
-	
-	# print(code)
 
 else:
-
 	print("\nFail, empty code.\n")
 
-# if('1'=='1'):
-# 	print('a')
-# newCode(';', 'begin',57 - 1)
-
-# current, peak = tracemalloc.get_traced_memory()
-# print(f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
-# tracemalloc.stop()
  
